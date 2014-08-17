@@ -21,12 +21,12 @@ GUMMY=~/gerpush-configs/gummyreview-config
 VANIR=~/gerpush-configs/vaniraospreview-config
 
 echo -e "To which of the following rom code reviews do you want to?"
-echo -e "[1] EOS"
+echo -e "[1] Team EOS"
 echo -e "[2] CyanogenMod"
 echo -e "[3] OmniROM"
 echo -e "[4] AOKP"
-echo -e "[5] Gummy"
-echo -e "[6] "
+echo -e "[5] TEAM Gummy ROM"
+echo -e "[6] VanirAOSP"
 
 echo -e "Enter your choice:"
 read review
