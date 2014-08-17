@@ -106,9 +106,9 @@ elif [[ "$review" == "4" ]]; then
     BRANCH="kitkat"
     if [ -e .git ]
     then
-    echo
     if [ -e $AOKP ]
     then
+    echo
     else
     echo -e "Enter your username:"
     read -r USERNAME
