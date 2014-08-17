@@ -39,6 +39,7 @@ if [[ "$review" == "1" ]]; then
     then
     if [ -e $EOS ]
     then
+    echo
     else
     echo -e "Enter your username:"
     read -r USERNAME
@@ -61,6 +62,7 @@ elif [[ "$review" == "2" ]]; then
     then
     if [ -e $CM ]
     then
+    echo
     else
     echo -e "Enter your username:"
     read -r USERNAME
@@ -83,6 +85,7 @@ elif [[ "$review" == "3" ]]; then
     then
     if [ -e $OMNI ]
     then
+    echo
     else
     echo -e "Enter your username:"
     read -r USERNAME
@@ -103,6 +106,7 @@ elif [[ "$review" == "4" ]]; then
     BRANCH="kitkat"
     if [ -e .git ]
     then
+    echo
     if [ -e $AOKP ]
     then
     else
@@ -127,6 +131,7 @@ elif [[ "$review" == "5" ]]; then
     then
     if [ -e $GUMMY ]
     then
+    echo
     else
     echo -e "Enter your username:"
     read -r USERNAME
@@ -149,6 +154,7 @@ elif [[ "$review" == "6" ]]; then
     then
     if [ -e $VANIR ]
     then
+    echo
     else
     echo -e "Enter your username:"
     read -r USERNAME
@@ -162,4 +168,4 @@ elif [[ "$review" == "6" ]]; then
     echo -e "This directory is not a git directory.."
     fi;
     exit 0
-fi
+fi;
