@@ -125,7 +125,7 @@ elif [[ "$review" == "4" ]]; then
 elif [[ "$review" == "5" ]]; then
     echo -e "So you want to push to Gummy Code Review?"
     echo -e "Good Luck in getting it merged."
-    REMOTE="review.gummyrom.co:29418"
+    REMOTE="review.gummyrom.com:29418"
     BRANCH="kk4.4"
     if [ -e .git ]
     then
