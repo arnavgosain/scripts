@@ -1,12 +1,84 @@
 #!/bin/bash
-gerpush
-REMOTE="review.teameos.org:29419"
-USERNAME="nolinuxnoparty"
-BRANCH="kk4.4"
+# Arnav Gosain <gosain.arnav@gmail.com> was here.
+echo -e "> [N O L I N U X N O P A R T Y] <"
+echo
+echo -e " Script for automated commit pushing to code review (gerrit) system."
+echo -e " The script supports EOS, CyanogenMod, OmniROM and AOKP currently."
+echo
 
-REPO=$(git remote -v | grep teameos | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+if [ -e ~/gerpush-configs ]
+then
+    echo -e "Gerrit Configs Directory Exists."
+else
+    mkdir ~/gerpush-configs
+fi;
 
-git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
+EOS=~/gerpush-configs/eosreview-config
+CM=~/gerpush-configs/cmreview-config
+OMNI=~/gerpush-configs/omnireview-config
+AOKP=~/gerpush-configs/aokpreview-config
 
-echo Script done
+echo -e "To which of the following rom code reviews do you want to?"
+echo -e "[1] EOS"
+echo -e "[2] CyanogenMod"
+echo -e "[3] OmniROM"
+echo -e "[4] AOKP"
 
+echo -e "Enter your choice:"
+read review
+if [[ "$review" == "1" ]]; then
+    echo -e "So you want to push to EOS Code Review?"
+    echo -e "Good Luck in getting it merged."
+    REMOTE="review.teameos.org:29419"
+    BRANCH="kk4.4"
+    if [ -e .git ]
+    then
+    if [ -e $EOS ]
+    then
+    else
+    echo -e "Enter your username:"
+    read -r USERNAME
+    echo "USERNAME=$USERNAME" >> "$EOS"
+    fi;
+    REPO=$(git remote -v | grep teameos | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    . ~/gerpush-configs/eosreview-config
+    git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
+    echo -e "Your change has been pushed."
+    else
+    echo -e "This directory is not a git directory.."
+    fi;
+    exit 0
+elif [[ "$review" == "2" ]]; then
+    echo -e "So you want to push to CyanogenMod Code Review?"
+    echo -e "Good Luck in getting it merged."
+    REMOTE="review.cyanogenmod.org:29418"
+    echo -e "Enter your username:"
+    read -r USERNAME
+    echo "USERNAME=$USERNAME" >> "$CM"
+    BRANCH="cm-11.0"
+    REPO=$(git remote -v | grep github | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    git push ssh://$USERNAME@$REMOTE/CyanogenMod/$REPO HEAD:refs/for/$BRANCH
+    echo -e "Your change has been pushed."
+elif [[ "$review" == "3" ]]; then
+    echo -e "So you want to push to OmniROM Code Review?"
+    echo -e "Good Luck in getting it merged."
+    REMOTE="gerrit.omnirom.org:29418"
+    echo -e "Enter your username:"
+    read -r USERNAME
+    echo "USERNAME=$USERNAME" >> "$OMNI"
+    BRANCH="android-4.4"
+    REPO=$(git remote -v | grep omni | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
+    echo -e "Your change has been pushed."
+elif [[ "$review" == "4" ]]; then
+    echo -e "So you want to push to AOKP Code Review?"
+    echo -e "Good Luck in getting it merged."
+    REMOTE="gerrit.aokp.co:29418"
+    echo -e "Enter your username:"
+    read -r USERNAME
+    echo "USERNAME=$USERNAME" >> "$AOKP"
+    BRANCH="kitkat"
+    REPO=$(git remote -v | grep aokp | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    git push ssh://$USERNAME@$REMOTE/AOKP/$REPO HEAD:refs/for/$BRANCH
+    echo -e "Your change has been pushed."
+fi
