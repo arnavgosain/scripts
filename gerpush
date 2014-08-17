@@ -1,0 +1,12 @@
+#!/bin/bash
+gerpush
+REMOTE="review.teameos.org:29419"
+USERNAME="nolinuxnoparty"
+BRANCH="kk4.4"
+
+REPO=$(git remote -v | grep teameos | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+
+git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
+
+echo Script done
+
