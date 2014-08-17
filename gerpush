@@ -17,12 +17,16 @@ EOS=~/gerpush-configs/eosreview-config
 CM=~/gerpush-configs/cmreview-config
 OMNI=~/gerpush-configs/omnireview-config
 AOKP=~/gerpush-configs/aokpreview-config
+GUMMY=~/gerpush-configs/gummyreview-config
+VANIR=~/gerpush-configs/vaniraospreview-config
 
 echo -e "To which of the following rom code reviews do you want to?"
 echo -e "[1] EOS"
 echo -e "[2] CyanogenMod"
 echo -e "[3] OmniROM"
 echo -e "[4] AOKP"
+echo -e "[5] Gummy"
+echo -e "[6] "
 
 echo -e "Enter your choice:"
 read review
@@ -41,7 +45,7 @@ if [[ "$review" == "1" ]]; then
     echo "USERNAME=$USERNAME" >> "$EOS"
     fi;
     REPO=$(git remote -v | grep teameos | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
-    . ~/gerpush-configs/eosreview-config
+    . $EOS
     git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
     echo -e "Your change has been pushed."
     else
@@ -52,33 +56,110 @@ elif [[ "$review" == "2" ]]; then
     echo -e "So you want to push to CyanogenMod Code Review?"
     echo -e "Good Luck in getting it merged."
     REMOTE="review.cyanogenmod.org:29418"
+    BRANCH="cm-11.0"
+    if [ -e .git ]
+    then
+    if [ -e $CM ]
+    then
+    else
     echo -e "Enter your username:"
     read -r USERNAME
     echo "USERNAME=$USERNAME" >> "$CM"
-    BRANCH="cm-11.0"
+    fi;
     REPO=$(git remote -v | grep github | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    . $CM
     git push ssh://$USERNAME@$REMOTE/CyanogenMod/$REPO HEAD:refs/for/$BRANCH
     echo -e "Your change has been pushed."
+    else
+    echo -e "This directory is not a git directory.."
+    fi;
+    exit 0
 elif [[ "$review" == "3" ]]; then
     echo -e "So you want to push to OmniROM Code Review?"
     echo -e "Good Luck in getting it merged."
     REMOTE="gerrit.omnirom.org:29418"
+    BRANCH="android-4.4"
+    if [ -e .git ]
+    then
+    if [ -e $OMNI ]
+    then
+    else
     echo -e "Enter your username:"
     read -r USERNAME
     echo "USERNAME=$USERNAME" >> "$OMNI"
-    BRANCH="android-4.4"
+    fi;
     REPO=$(git remote -v | grep omni | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    . $OMNI
     git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
     echo -e "Your change has been pushed."
+    else
+    echo -e "This directory is not a git directory.."
+    fi;
+    exit 0
 elif [[ "$review" == "4" ]]; then
     echo -e "So you want to push to AOKP Code Review?"
     echo -e "Good Luck in getting it merged."
     REMOTE="gerrit.aokp.co:29418"
+    BRANCH="kitkat"
+    if [ -e .git ]
+    then
+    if [ -e $AOKP ]
+    then
+    else
     echo -e "Enter your username:"
     read -r USERNAME
     echo "USERNAME=$USERNAME" >> "$AOKP"
-    BRANCH="kitkat"
-    REPO=$(git remote -v | grep aokp | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    fi;
+    REPO=$(git remote -v | grep omni | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    . $AOKP
     git push ssh://$USERNAME@$REMOTE/AOKP/$REPO HEAD:refs/for/$BRANCH
     echo -e "Your change has been pushed."
+    else
+    echo -e "This directory is not a git directory.."
+    fi;
+    exit 0
+elif [[ "$review" == "5" ]]; then
+    echo -e "So you want to push to Gummy Code Review?"
+    echo -e "Good Luck in getting it merged."
+    REMOTE="review.gummyrom.co:29418"
+    BRANCH="kk4.4"
+    if [ -e .git ]
+    then
+    if [ -e $GUMMY ]
+    then
+    else
+    echo -e "Enter your username:"
+    read -r USERNAME
+    echo "USERNAME=$USERNAME" >> "$GUMMY"
+    fi;
+    REPO=$(git remote -v | grep tg | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    . $GUMMY
+    git push ssh://$USERNAME@$REMOTE/TEAM-Gummy/$REPO HEAD:refs/for/$BRANCH
+    echo -e "Your change has been pushed."
+    else
+    echo -e "This directory is not a git directory.."
+    fi;
+    exit 0
+elif [[ "$review" == "6" ]]; then
+    echo -e "So you want to push to Gummy Code Review?"
+    echo -e "Good Luck in getting it merged."
+    REMOTE="gerrit.vanir.co:29419"
+    BRANCH="kk44"
+    if [ -e .git ]
+    then
+    if [ -e $VANIR ]
+    then
+    else
+    echo -e "Enter your username:"
+    read -r USERNAME
+    echo "USERNAME=$USERNAME" >> "$VANIR"
+    fi;
+    REPO=$(git remote -v | grep vanir | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    . $VANIR
+    git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
+    echo -e "Your change has been pushed."
+    else
+    echo -e "This directory is not a git directory.."
+    fi;
+    exit 0
 fi
