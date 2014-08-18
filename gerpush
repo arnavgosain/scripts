@@ -3,7 +3,7 @@
 echo -e "> [N O L I N U X N O P A R T Y] <"
 echo
 echo -e " Script for automated commit pushing to code review (gerrit) system."
-echo -e " The script supports EOS, CyanogenMod, OmniROM and AOKP currently."
+echo -e " The script supports EOS, CyanogenMod, OmniROM, AOKP, TEAM Gummy ROM and VanirAOSP currently."
 echo
 
 if [ -e ~/gerpush-configs ]
