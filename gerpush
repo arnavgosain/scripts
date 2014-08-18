@@ -146,7 +146,7 @@ elif [[ "$review" == "5" ]]; then
     fi;
     exit 0
 elif [[ "$review" == "6" ]]; then
-    echo -e "So you want to push to Gummy Code Review?"
+    echo -e "So you want to push to Vanir Code Review?"
     echo -e "Good Luck in getting it merged."
     REMOTE="gerrit.vanir.co:29419"
     BRANCH="kk44"
