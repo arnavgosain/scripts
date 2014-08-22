@@ -3,22 +3,23 @@
 echo -e "> [N O L I N U X N O P A R T Y] <"
 echo
 echo -e " Script for automated commit pushing to code review (gerrit) system."
-echo -e " The script supports EOS, CyanogenMod, OmniROM, AOKP, TEAM Gummy ROM and VanirAOSP currently."
+echo -e " The script supports EOS, CyanogenMod, OmniROM, AOKP, TEAM Gummy ROM , VanirAOSP and Nameless ROM currently."
 echo
 
-if [ -e ~/gerpush-configs ]
+if [ -e ~/.gerpush-configs ]
 then
     echo -e "Gerrit Configs Directory Exists."
 else
-    mkdir ~/gerpush-configs
+    mkdir ~/.gerpush-configs
 fi;
 
-EOS=~/gerpush-configs/eosreview-config
-CM=~/gerpush-configs/cmreview-config
-OMNI=~/gerpush-configs/omnireview-config
-AOKP=~/gerpush-configs/aokpreview-config
-GUMMY=~/gerpush-configs/gummyreview-config
-VANIR=~/gerpush-configs/vaniraospreview-config
+EOS=~/.gerpush-configs/eosreview-config
+CM=~/.gerpush-configs/cmreview-config
+OMNI=~/.gerpush-configs/omnireview-config
+AOKP=~/.gerpush-configs/aokpreview-config
+GUMMY=~/.gerpush-configs/gummyreview-config
+VANIR=~/.gerpush-configs/vaniraospreview-config
+NAMELESS=~/.gerpush-configs/nameless-config
 
 echo -e "To which of the following rom code reviews do you want to?"
 echo -e "[1] Team EOS"
@@ -27,9 +28,12 @@ echo -e "[3] OmniROM"
 echo -e "[4] AOKP"
 echo -e "[5] TEAM Gummy ROM"
 echo -e "[6] VanirAOSP"
+echo -e "[7] Nameless ROM"
 
-echo -e "Enter your choice:"
-read review
+echo -e "Enter your choice: "
+read -n1 review
+echo
+echo
 if [[ "$review" == "1" ]]; then
     echo -e "So you want to push to EOS Code Review?"
     echo -e "Good Luck in getting it merged."
@@ -163,6 +167,29 @@ elif [[ "$review" == "6" ]]; then
     REPO=$(git remote -v | grep vanir | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $VANIR
     git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
+    echo -e "Your change has been pushed."
+    else
+    echo -e "This directory is not a git directory.."
+    fi;
+    exit 0
+elif [[ "$review" == "7" ]]; then
+    echo -e "So you want to push to Nameless Code Review?"
+    echo -e "Good Luck in getting it merged."
+    REMOTE="gerrit.nameless-rom.org:29418"
+    BRANCH="android-4.4"
+    if [ -e .git ]
+    then
+    if [ -e $NAMELESS ]
+    then
+    echo
+    else
+    echo -e "Enter your username:"
+    read -r USERNAME
+    echo "USERNAME=$USERNAME" >> "$VANIR"
+    fi;
+    REPO=$(git remote -v | grep vanir | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    . $NAMELESS
+    git push ssh://$USERNAME@$REMOTE/NamelessRom/$REPO HEAD:refs/for/$BRANCH
     echo -e "Your change has been pushed."
     else
     echo -e "This directory is not a git directory.."

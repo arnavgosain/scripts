@@ -1,4 +1,13 @@
 #!/bin/bash
+clear
+echo -e "> [N O L I N U X N O P A R T Y] <"
+echo
+echo -e " Script to build almost any rom."
+echo -e " Usage: ./builder <codename> <rom> <username> <build-variant>"
+echo -e " For example: ./builder nicki vanir nolinuxnoparty userdebug"
+echo
+read -p "Press [Enter] key to continue..."
+clear
 
 START="$(date +%s)"
 
