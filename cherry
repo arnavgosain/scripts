@@ -1,0 +1,10 @@
+#!/bin/bash
+echo -e "CHERRY-PICK AWESOMENESS"
+echo -e "Not a noob friendly script, bummer!"
+for i in {0..10000..2}
+  do
+    echo -e "Enter Commit-Id:"
+    read -r COMMIT_ID
+    git cherry-pick $COMMIT_ID
+    echo -e "Cherry-picked $COMMIT_ID"
+done
