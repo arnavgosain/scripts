@@ -1,14 +1,4 @@
 #!/bin/bash
-clear
-echo -e "> [N O L I N U X N O P A R T Y] <"
-echo
-echo -e " Script to build almost any rom."
-echo -e " Usage: ./builder <codename> <rom> <username> <build-variant>"
-echo -e " For example: ./builder nicki vanir nolinuxnoparty userdebug"
-echo
-read -p "Press [Enter] key to continue..."
-clear
-
 START="$(date +%s)"
 
 DATE=`date +%Y%m%d.%H%M%S`
@@ -41,25 +31,26 @@ echo -e "Abort: no rom set" >&2
 exit 0
 fi
 
-if [ "$USER" == "" ]; then
-if [ "$3" != "" ]; then
-USER=$3
-fi
-fi
-if [ "$USER" == "" ]; then
-echo -e "Abort: no user set" >&2
-exit 0
-fi
+USER_CONFIG=~/.builder_configs/config
+USER_CONFIG_DIR=~/.builder_configs/
+if [ -e $USER_CONFIG ]
+then
+echo
+else
+mkdir $USER_CONFIG_DIR
+echo -e "Enter your username:"
+echo
+read -r USERNAME
+echo "USER=$USERNAME" >> "$USER_CONFIG"
+echo
+fi;
+clear
 
-if [ "$VARIANT" == "" ]; then
-if [ "$4" != "" ]; then
-VARIANT=$4
-fi
-fi
-if [ "$VARIANT" == "" ]; then
-echo -e "Abort: no build variant set" >&2
-exit 0
-fi
+echo -e "Enter build variant:"
+echo
+read -r VARIANT
+echo
+clear
 
 if pwd |grep -q $ROM ; then
     name=$ROM
@@ -82,20 +73,23 @@ if pwd |grep -q aosb ; then
     repo=aosb
 fi;
 
+. $USER_CONFIG
 cd /home/$USER/$repo
 source /home/$USER/$repo/build/envsetup.sh
 
 lunch ${name}_$DEVICE-$VARIANT
 
 OUT=~/$repo/out/target/product/$DEVICE
-OUTPUT=~/$repo/out/target/product/$DEVICE/*${name}*.zip
+OUTPUT=~/$repo/out/target/product/$DEVICE/*"${name}"*.zip
 
 echo -e "Do you want to clean the outdir?"
-echo -e "[ 1 ] YES"
-echo -e "[ 2 ] NO"
+echo -e "[1] YES"
+echo -e "[2] NO"
+echo
 
 echo -e "Enter your choice:"
-read yesorno
+read -n1 yesorno
+echo
         if [[ "$yesorno" == "1" ]]; then
                 echo -e "Clobbering!"
                 make clobber -j40
@@ -103,20 +97,7 @@ read yesorno
                 echo -e "Continuing build!"
 fi
 clear
-
-echo -e "Do you want to continue?"
-echo -e "[ 1 ] YES"
-echo -e "[ 2 ] NO"
-
-echo -e "Enter your choice:"
-read continue
-        if [[ "$continue" == "1" ]]; then
-                echo -e "Continuing further build process!"
-        elif [[ "$continue" == "2" ]]; then
-                echo -e "Exiting Script"
-                exit 0
-fi
-clear
+echo
 
 echo -e  "Here we go!"
 
@@ -128,48 +109,15 @@ else
    time mka -j40 bacon 2>&1 | tee $repo-$name_$DEVICE-$DATE.log
 fi;
 
-#if [ -e $OUTPUT ]
-#then
-#  echo -e "\e[92mBuild succesfull!\e[39m"
-#else
-#  echo -e "\e[91mBuild failed!"
-#  echo -e "$OUTPUT does not exist!\e[39m"
-#fi;
-
-#echo -e "Do you wish to enter outdir?"
-#echo -e "[ 1 ] YES"
-#echo -e "[ 2 ] NO"
-
-#echo -e "Enter your choice:"
-#read outdir
-#        if [[ "$outdir" == "1" ]]; then
-#                echo -e "Entering OUTDIR!"
-#                cd $OUT
-#        elif [[ "$outdir" == "2" ]]; then
-#                END="$(date +%s)"
-#
-#                DURATION="$(( $END - $START ))"
-#                DURATION_MIN="$((DURATION/60))"
-#                echo -e "The build took $DURATION_MIN minutes"
-#fi
 END="$(date +%s)"
 
 DURATION="$(( $END - $START ))"
 DURATION_MIN="$((DURATION/60))"
 
-if [ -e $OUTPUT ]
-then
 echo -e
-echo -e $CL_CYN"===========-Build failed-==========="$CL_RST
-echo -e $CL_RST"build duration: $DURATION_MIN minutes"$CL_RST
-echo -e $CL_RST"build log: $repo-$name_$DEVICE-$DATE.log"$CL_RST
+echo -e $CL_CYN"===========-$repo-$TARGET_PRODUCT-$VARIANT build info-==========="$CL_RST
+echo -e $CL_RST"duration: $DURATION_MIN minutes"$CL_RST
+echo -e $CL_RST"log: "$repo"-"$name"_"$DEVICE"-"$DATE".log"$CL_RST
 echo -e $CL_CYN"========================================"$CL_RST
-else
-echo -e
-echo -e $CL_CYN"===========-Package complete-==========="$CL_RST
-echo -e $CL_RST"build duration: $DURATION_MIN minutes"$CL_RST
-echo -e $CL_RST"build log: $repo-$name_$DEVICE-$DATE.log"$CL_RST
-echo -e $CL_CYN"========================================"$CL_RST
-fi;
 
 exit 0
