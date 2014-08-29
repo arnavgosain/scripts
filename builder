@@ -1,6 +1,47 @@
 #!/bin/bash
 START="$(date +%s)"
 
+usage()
+{
+    echo -e ""
+    echo -e ${txtbld}"Usage:"${txtrst}
+    echo -e "  builder [options] rom_device-variant"
+    echo -e ""
+    echo -e ${txtbld}"  Options:"${txtrst}
+    echo -e "    -c  Clean previous output before build."
+    echo -e "    -j# Set jobs"
+    echo -e "    -l  Log of the build output"
+    echo -e "    -r  Reset source tree before build"
+    echo -e "    -v  Verbose build output"
+    echo -e ""
+    echo -e ${txtbld}"  Example:"${txtrst}
+    echo -e "    ./builder -c vanir_hammerhead-userdebug"
+    echo -e ""
+    exit 1
+}
+
+opt_clean=0
+opt_jobs="$CPUS"
+opt_reset=0
+opt_verbose=0
+opt_log=0
+
+while getopts ":c:j:l:r:v" opt; do
+    case "$opt" in
+    c) opt_clean=1 ;;
+    j) opt_jobs="$OPTARG" ;;
+    l) opt_log=1 ;;
+    r) opt_reset=1 ;;
+    v) opt_verbose=1 ;;
+    *) usage
+    esac
+done
+shift $((OPTIND-1))
+if [ "$#" -ne 1 ]; then
+    usage
+fi
+build_combo="$1"
+
 DATE=`date +%Y%m%d.%H%M%S`
 
 CL_RED="\033[31m"
@@ -11,102 +52,45 @@ CL_MAG="\033[35m"
 CL_CYN="\033[36m"
 CL_RST="\033[0m"
 
-if [ "$DEVICE" == "" ]; then
-if [ "$1" != "" ]; then
-DEVICE=$1
-fi
-fi
-if [ "$DEVICE" == "" ]; then
-echo -e "Abort: no device set" >&2
-exit 0
-fi
+source build/envsetup.sh
+lunch "$build_combo"
 
-if [ "$ROM" == "" ]; then
-if [ "$2" != "" ]; then
-ROM=$2
-fi
-fi
-if [ "$ROM" == "" ]; then
-echo -e "Abort: no rom set" >&2
-exit 0
+# reset source tree
+if [ "$opt_reset" -ne 0 ]; then
+    echo -e ""
+    echo -e ${bldblu}"Resetting source tree and removing all uncommitted changes"${txtrst}
+    repo forall -c "git reset --hard HEAD; git clean -qf"
+    echo -e ""
 fi
 
-USER_CONFIG=~/.builder_configs/config
-USER_CONFIG_DIR=~/.builder_configs/
-if [ -e $USER_CONFIG ]
-then
-echo
-else
-mkdir $USER_CONFIG_DIR
-echo -e "Enter your username:"
-echo
-read -r USERNAME
-echo "USER=$USERNAME" >> "$USER_CONFIG"
-echo
-fi;
-clear
-
-echo -e "Enter build variant:"
-echo
-read -r VARIANT
-echo
-clear
-
-if pwd |grep -q $ROM ; then
-    name=$ROM
-    repo=$ROM
-    echo -e Building $ROM!
-fi;
-
-if pwd |grep -q eos ; then
-    name=full
-    repo=eos
-fi;
-
-if pwd |grep -q gummy ; then
-    name=tg
-    repo=gummy
-fi;
-
-if pwd |grep -q aosb ; then
-    name=cm
-    repo=aosb
-fi;
-
-. $USER_CONFIG
-cd /home/$USER/$repo
-source /home/$USER/$repo/build/envsetup.sh
-
-lunch ${name}_$DEVICE-$VARIANT
-
-OUT=~/$repo/out/target/product/$DEVICE
-OUTPUT=~/$repo/out/target/product/$DEVICE/*"${name}"*.zip
-
-echo -e "Do you want to clean the outdir?"
-echo -e "[1] YES"
-echo -e "[2] NO"
-echo
-
-echo -e "Enter your choice:"
-read -n1 yesorno
-echo
-        if [[ "$yesorno" == "1" ]]; then
-                echo -e "Clobbering!"
-                make clobber -j40
-        elif [[ "$yesorno" == "2" ]]; then
-                echo -e "Continuing build!"
+if [ "$opt_clean" -eq 1 ]; then
+    make clean
+    make clobber
+    make installclean
+    echo -e ""
+    echo -e ${bldblu}"Out is clean"${txtrst}
+    echo -e ""
 fi
 clear
-echo
 
 echo -e  "Here we go!"
 
-if [ $ROM == gummy ]; then
-   echo -e "\e[94mYou are building $ROM!\e[39m"
-   time mka -j40 gummy 2>&1 | tee $repo-$name_$DEVICE-$DATE.log
+if [ "$opt_log" -eq 0 ]; then
+if [ "$opt_verbose" -ne 0 ]; then
+	echo -e "\e[96mYou are building $ROM!\e[39m"
+	make -j"$opt_jobs" showcommands bacon
 else
-   echo -e "\e[96mYou are building $ROM!\e[39m"
-   time mka -j40 bacon 2>&1 | tee $repo-$name_$DEVICE-$DATE.log
+	echo -e "\e[96mYou are building $ROM!\e[39m"
+	time mka -j"$opt_jobs" bacon
+fi;
+else
+if [ "$opt_verbose" -ne 0 ]; then
+        echo -e "\e[96mYou are building $ROM!\e[39m"
+        make -j"$opt_jobs" showcommands bacon 2>&1 | tee $build_combo-$DATE.log
+else
+        echo -e "\e[96mYou are building $ROM!\e[39m"
+        time mka -j"$opt_jobs" bacon 2>&1 | tee $build_combo-$DATE.log
+fi;
 fi;
 
 END="$(date +%s)"
@@ -114,10 +98,17 @@ END="$(date +%s)"
 DURATION="$(( $END - $START ))"
 DURATION_MIN="$((DURATION/60))"
 
+if [ "$opt_log" -ne 0 ]; then
 echo -e
-echo -e $CL_CYN"===========-$repo-$TARGET_PRODUCT-$VARIANT build info-==========="$CL_RST
+echo -e $CL_CYN"===========-$build_combo build info-==========="$CL_RST
 echo -e $CL_RST"duration: $DURATION_MIN minutes"$CL_RST
-echo -e $CL_RST"log: "$repo"-"$name"_"$DEVICE"-"$DATE".log"$CL_RST
 echo -e $CL_CYN"========================================"$CL_RST
+else
+echo -e
+echo -e $CL_CYN"===========-$build_combo build info-==========="$CL_RST
+echo -e $CL_RST"duration: $DURATION_MIN minutes"$CL_RST
+echo -e $CL_RST"log: "$build_combo-$DATE".log"$CL_RST
+echo -e $CL_CYN"========================================"$CL_RST
+fi;
 
 exit 0
