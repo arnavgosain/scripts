@@ -77,18 +77,14 @@ echo -e  "Here we go!"
 
 if [ "$opt_log" -eq 0 ]; then
 if [ "$opt_verbose" -ne 0 ]; then
-	echo -e "\e[96mYou are building $ROM!\e[39m"
-	make -j"$opt_jobs" showcommands bacon
+	time make -j"$opt_jobs" showcommands bacon
 else
-	echo -e "\e[96mYou are building $ROM!\e[39m"
 	time mka -j"$opt_jobs" bacon
 fi;
 else
 if [ "$opt_verbose" -ne 0 ]; then
-        echo -e "\e[96mYou are building $ROM!\e[39m"
-        make -j"$opt_jobs" showcommands bacon 2>&1 | tee $build_combo-$DATE.log
+        time make -j"$opt_jobs" showcommands bacon 2>&1 | tee $build_combo-$DATE.log
 else
-        echo -e "\e[96mYou are building $ROM!\e[39m"
         time mka -j"$opt_jobs" bacon 2>&1 | tee $build_combo-$DATE.log
 fi;
 fi;
