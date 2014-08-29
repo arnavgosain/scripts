@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec gerrit-fetch --post=cherry-pick "$@"
