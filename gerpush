@@ -8,22 +8,21 @@ echo -e " The script supports EOS, CyanogenMod, OmniROM, AOKP, TEAM Gummy ROM , 
 echo
 }
 
-WORKSPACE=~
-if [ -e $WORKSPACE/.gerpush-configs ]
+if [ -e ~/.gerpush-configs ]
 then
     echo -e "Gerrit Configs Directory Exists."
 else
-    mkdir $WORKSPACE/.gerpush-configs
+    mkdir ~/.gerpush-configs
 fi;
 
-EOS=$WORKSPACE/.gerpush-configs/eosreview-config
-CM=$WORKSPACE/.gerpush-configs/cmreview-config
-OMNI=$WORKSPACE/.gerpush-configs/omnireview-config
-AOKP=$WORKSPACE/.gerpush-configs/aokpreview-config
-GUMMY=$WORKSPACE/.gerpush-configs/gummyreview-config
-VANIR=$WORKSPACE/.gerpush-configs/vaniraospreview-config
-NAMELESS=$WORKSPACE/.gerpush-configs/nameless-config
-MERK=$WORKSPACE/.gerpush.configs/merk-config
+EOS=~/.gerpush-configs/eosreview-config
+CM=~/.gerpush-configs/cmreview-config
+OMNI=~/.gerpush-configs/omnireview-config
+AOKP=~/.gerpush-configs/aokpreview-config
+GUMMY=~/.gerpush-configs/gummyreview-config
+VANIR=~/.gerpush-configs/vaniraospreview-config
+NAMELESS=~/.gerpush-configs/nameless-config
+MERK=~/.gerpush.configs/merk-config
 
 echo -e "To which of the following rom code reviews do you want to?"
 echo -e "[1] Team EOS"
@@ -52,7 +51,7 @@ if [[ "$review" == "1" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$EOS"
+    touch $EOS && echo "USERNAME=$USERNAME" >> "$EOS"
     fi;
     REPO=$(git remote -v | grep teameos | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $EOS
@@ -75,7 +74,7 @@ elif [[ "$review" == "2" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$CM"
+    touch $CM && echo "USERNAME=$USERNAME" >> "$CM"
     fi;
     REPO=$(git remote -v | grep github | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $CM
@@ -98,7 +97,7 @@ elif [[ "$review" == "3" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$OMNI"
+    touch $OMNI && echo "USERNAME=$USERNAME" >> "$OMNI"
     fi;
     REPO=$(git remote -v | grep omni | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $OMNI
@@ -121,7 +120,7 @@ elif [[ "$review" == "4" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$AOKP"
+    touch $AOKP && echo "USERNAME=$USERNAME" >> "$AOKP"
     fi;
     REPO=$(git remote -v | grep omni | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $AOKP
@@ -144,7 +143,7 @@ elif [[ "$review" == "5" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$GUMMY"
+    touch $GUMMY && echo "USERNAME=$USERNAME" >> "$GUMMY"
     fi;
     REPO=$(git remote -v | grep tg | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $GUMMY
@@ -167,7 +166,7 @@ elif [[ "$review" == "6" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$VANIR"
+    touch $VANIR && echo "USERNAME=$USERNAME" >> "$VANIR"
     fi;
     REPO=$(git remote -v | grep vanir | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $VANIR
@@ -190,7 +189,7 @@ elif [[ "$review" == "7" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$MERK"
+    touch $NAMELESS && echo "USERNAME=$USERNAME" >> "$NAMELESS"
     fi;
     REPO=$(git remote -v | grep nameless | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $NAMELESS
@@ -213,9 +212,9 @@ elif [[ "$review" == "8" ]]; then
     else
     echo -e "Enter your username:"
     read -r USERNAME
-    echo "USERNAME=$USERNAME" >> "$MERK"
+    touch $MERK && echo "USERNAME=$USERNAME" >> "$MERK"
     fi;
-    REPO=$(git remote -v | grep vanir | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
+    REPO=$(git remote -v | grep merk | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//')
     . $NAMELESS
     git push ssh://$USERNAME@$REMOTE/$REPO HEAD:refs/for/$BRANCH
     echo -e "Your change has been pushed."
