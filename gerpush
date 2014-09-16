@@ -8,21 +8,22 @@ echo -e " The script supports EOS, CyanogenMod, OmniROM, AOKP, TEAM Gummy ROM , 
 echo
 }
 
-if [ -e ~/.gerpush-configs ]
+WORKSPACE=~
+if [ -e $WORKSPACE/.gerpush-configs ]
 then
     echo -e "Gerrit Configs Directory Exists."
 else
-    mkdir ~/.gerpush-configs
+    mkdir $WORKSPACE/.gerpush-configs
 fi;
 
-EOS=~/.gerpush-configs/eosreview-config
-CM=~/.gerpush-configs/cmreview-config
-OMNI=~/.gerpush-configs/omnireview-config
-AOKP=~/.gerpush-configs/aokpreview-config
-GUMMY=~/.gerpush-configs/gummyreview-config
-VANIR=~/.gerpush-configs/vaniraospreview-config
-NAMELESS=~/.gerpush-configs/nameless-config
-MERK=~/.gerpush.configs/merk-config
+EOS=$WORKSPACE/.gerpush-configs/eosreview-config
+CM=$WORKSPACE/.gerpush-configs/cmreview-config
+OMNI=$WORKSPACE/.gerpush-configs/omnireview-config
+AOKP=$WORKSPACE/.gerpush-configs/aokpreview-config
+GUMMY=$WORKSPACE/.gerpush-configs/gummyreview-config
+VANIR=$WORKSPACE/.gerpush-configs/vaniraospreview-config
+NAMELESS=$WORKSPACE/.gerpush-configs/nameless-config
+MERK=$WORKSPACE/.gerpush.configs/merk-config
 
 echo -e "To which of the following rom code reviews do you want to?"
 echo -e "[1] Team EOS"
